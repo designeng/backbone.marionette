@@ -306,7 +306,7 @@ Modules are not automatically stopped by the application. If you wish to
 stop one, you must call the `stop` method on it. The exception to this is
 that stopping a parent module will stop all of it's sub-modules.
 
-Модули не выключаются автоматически Приложением. Если вы хотите остановить какой-либо модуль,
+Модули не выключаются автоматически приложением. Если вы хотите остановить какой-либо модуль,
 вам нужно явно вызвать его метод `stop`. Исключение составляет то обстоятельство, что с выключением
 внешнего модуля будут выключены и все его подмодули.
 
@@ -320,8 +320,8 @@ This call to `stop` causes the `Bar` and `Baz` modules to both be stopped
 as they are sub-modules of `Foo`. For more information on defining
 sub-modules, see the section "Defining Sub-Modules With . Notation".
 
-Вызов `stop` в данном случае повлечет выключение `Bar` и `Baz`, поскольку они
-подмодули `Foo`. (Для детальной информации по определению подмодулей см. раздел
+Вызов `stop` в данном случае повлечет выключение `Bar` и `Baz`, поскольку они являются
+подмодулями `Foo`. (Для более подробной информации по определению подмодулей см. раздел
 "Определение подмодулей при помощи .(dot) нотации"). 
 
 ### События при остановке модуля
@@ -330,38 +330,44 @@ When stopping a module, a "before:stop" event will be triggered prior
 to any of the finalizers being run. A "stop" event will then be triggered
 after they have been run.
 
-Когда модуль останавливается, прежде чем какие-либо заключительные действия (finalizers) будут произведены,
-разошлется специальное событие "before:stop". И, по аналогии со "start"-событием, событие "stop" будет разослано, после того, как сработают заключительные действия (finalizers).
+Когда модуль останавливается, прежде чем какие-либо "завершители" (finalizers) будут вызваны,
+разошлется специальное событие "before:stop". И, по аналогии со "start"-событием, событие "stop" будет разослано, после того, как сработают "завершители".
 
 ```js
 var mod = MyApp.module("MyMod");
 
 mod.on("before:stop", function(){
-  // do stuff before the module is stopped
+  // делаем что-то прежде чем модуль остановится
 });
 
 mod.on("stop", function(){
-  // do stuff after the module has been stopped
+  // делаем что-то после того как модуль остановился
 });
 ```
 
-## Defining Sub-Modules With . Notation
+## Определение подмодулей с помощью .(dot) нотации
 
 Sub-modules or child modules can be defined as a hierarchy of modules and 
 sub-modules all at once:
 
+Подмодули, или потомки модуля, в один прием могут быть заданы в качестве иерархии модулей и подмодулей:
+
 ```js
 MyApp.module("Parent.Child.GrandChild");
 
-MyApp.Parent; // => a valid module object
-MyApp.Parent.Child; // => a valid module object
-MyApp.Parent.Child.GrandChild; // => a valid module object
+MyApp.Parent; // => абсолютно валидный модуль
+MyApp.Parent.Child; // => то же самое, абсолютно валидный модуль
+MyApp.Parent.Child.GrandChild; // => то же самое, абсолютно валидный модуль
 ```
 
 When defining sub-modules using the dot-notation, the 
 parent modules do not need to exist. They will be created
 for you if they don't exist. If they do exist, though, the
 existing module will be used instead of creating a new one.
+
+Таким образом, в момент задания подмодулей с помощью dot-нотации, родительские модули не обязательно
+должны уже существовать. Они будут автоматически созданы, если их еще нет - если же они существуют,
+то будут задействованы именно эти, существующие модули - новых же создано не будет.
 
 ## Module Definitions
 
@@ -475,7 +481,7 @@ your module.
 Вы можете передать модулю любое количество пользовательских аргументов,
 сделать это при необходимости можно после определяющей модуль функции, как указано в следующем примере.
 Это позволит вам импортировать в модуль сторонние библиотеки и другие ресурсы. После импорта они будут доступны 
-внутри модуля, в виде тех локальных переменных, которые вы передадите в качестве аргументов в описывающую модуль функцию:
+внутри модуля, в виде тех локальных переменных, которые вы передадите в качестве аргументов в определяющую модуль функцию:
 
 ```js
 MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _, Lib1, Lib2, LibEtc){
