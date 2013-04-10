@@ -5,32 +5,31 @@ including sub-modules hanging from that module. This is useful for creating
 modular, encapsulated applications that are split apart in to multiple 
 files.
 
-Marionette разрешает вам регистрировать собственные модули внутри приложения,
-включая подмодули, зависящие от определенного модуля. Это полезно для создания
+Marionette предоставляет вам возможность описать модуль внутри вашего приложения,
+включая подмодули, зависящие от этого модуля. Это полезно для создания
 сложных приложений, где каждый модуль инкапсулирует свои собственные свойства и методы,
-а функциональность, благодаря модульной структуре приложения, вынесена в отдельные файлы. 
+а их функциональность, благодаря модульной структуре приложения, вынесена в отдельные файлы. 
 
 Marionette's modules allow you to have unlimited sub-modules hanging off of
 your application, and serve as an event aggregator in themselves.
 
-Модули в Marionette могут иметь неограниченное количество подмодулей, зависящих от 
-вашего приложения, и являющихся самими по себе агрегаторами событий.
+Структура модулей в Marionette предоставляет возможность включать в приложение неограниченное количество подмодулей. Все они зависят от поведения вашего приложения, и являются самими по себе агрегаторами событий.
 
 ## Documentation Index
 
 * [Основы использования](#basic-usage)
 * [Запуск и остановка модулей](#starting-and-stopping-modules)
   * [Запуск модулей](#starting-modules)
-  * [Рассылка событий](#start-events)
+  * [События запуска](#start-events)
   * [Предохранение от самозапуска модулей](#preventing-auto-start-of-modules)
   * [Запуск подмодулей их владельцами](#starting-sub-modules-with-parent)
   * [Остановка модулей](#stopping-modules)
-  * [Остановка рассылки событий](#stop-events)
+  * [События остановки](#stop-events)
 * [Определение подмодулей при помощи .(dot) нотации](#defining-sub-modules-with--notation)
 * [Module Definitions](#module-definitions)
   * [Module Initializers](#module-initializers)
   * [Module Finalizers](#module-finalizers)
-* [The Module's `this` Argument](#the-modules-this-argument)
+* [Аргумент модулей `this`](#the-modules-this-argument)
 * [Аргументы, определенные пользователем](#custom-arguments)
 * [Разбиение описания модуля на отдельные части](#splitting-a-module-definition-apart)
 
@@ -38,7 +37,7 @@ your application, and serve as an event aggregator in themselves.
 
 A module is defined directly from an Application object as the specified
 name:
-Модуль определяется непосредственно из объекта Приложения - для этого модулю назначается  имя:
+Модуль задается непосредственно из объекта Приложения - для этого модулю назначается имя:
 
 ```js
 var MyApp = new Backbone.Marionette.Application();
@@ -54,8 +53,8 @@ If you specify the same module name more than once, the
 first instance of the module will be retained and a new
 instance will not be created.
 
-Если вы определите модуль с одним и тем же именем более одного раза,
-первый экземпляр сохранится в памяти, а второй просто не будет создан.
+Если вы попытаетесь задать модуль с одним и тем же именем более одного раза,
+первый экземпляр будет зафиксирован в приложении и сохранен в памяти, а остальные просто не будут созданы.
 
 ## Запуск и остановка модулей
 
@@ -68,7 +67,7 @@ module that you need in your tests.
 Модули могут быть запущены/остановлены независимым образом: инициатором запуска/остановки 
 может являться как само приложение, так и другой модуль. Это позволяет им независимо и асинхронно 
 загружаться в приложение, и также дает возможность выгрузить их в один прекрасный момент, когда
-они больше не используются. Такой подход значительно облегчает жизнь тестировщику: каждый модуль 
+они больше не используются. Такой подход, помимо прочего, значительно облегчает тестирование: каждый модуль 
 может быть запущен и протестирован изолированно.
 
 ### Запуск модулей
@@ -76,7 +75,7 @@ module that you need in your tests.
 Запуск модуля может быть произведен одним из двух способов:
 
 1. Автоматически из внешнего модуля (или из Приложения), когда будет вызван метод `.start()` внешнего модуля (Приложения)
-2. Вручную, вызывая метод `.start()` самого модуля.
+2. Вручную, с помощью вызова метода `.start()` самого модуля.
 
 В этом примере модуль будет запущен автоматически, когда на объекте родительского приложения
 выполнится его метод `start`:
@@ -95,6 +94,7 @@ MyApp.start();
 
 Note that modules loaded and defined after the `app.start()` call will still
 be started automatically.
+
 Следует заметить, что модули, загруженные и определенные даже после вызова `app.start()`
 все равно будут запускаться автоматически.
 
@@ -103,6 +103,7 @@ be started automatically.
 When starting a module, a "before:start" event will be triggered prior
 to any of the initializers being run. A "start" event will then be 
 triggered after they have been run.
+
 Во время запуска модуля произойдут два события: "before:start" и "start".
 До всяких действий по инициализации будет вброшено событие "before:start".
 Само событие "start" будет запущено только после инициализация модуля.
@@ -119,9 +120,10 @@ mod.on("start", function(){
 });
 ```
 
-#### Passing Data to Start Events
+#### Передача данных в события запуска
 
 `.start` takes a single `options` parameter that will be passed to start events and their equivalent methods (`onStart` and `onBeforeStart`.) 
+
 Метод `.start` принимает один-единственный параметр -  `options`, который 
 будет передан start-событиям и их функциональным эквивалентам (`onStart` and `onBeforeStart`.) 
 
@@ -173,13 +175,13 @@ not to start with the application. Then to start the module, the module's
 `start` method is manually called.
 
 Обратите внимание на использование объектного литерала вместо просто функции для определения модуля,
-и присутствие аттрибута `startWithParent`, говорящего модулю, что он не должен запускаться вместе с запуском приложения. Теперь, чтобы запустить модуль, метод модуля `start` долен быть вызван вручную.
+и присутствие аттрибута `startWithParent`, сообщающего модулю, что он не должен запускаться вместе с запуском приложения. Теперь, чтобы запустить модуль, метод модуля `start` долен быть вызван вручную.
 
 You can also grab a reference to the module at a later point in time, to
 start it:
 
 Вы также можете получить ссылку на модуль в какой-то более поздний момент времени,
-чтобы запустить его:
+чтобы произвести запуск:
 
 ```js
 MyApp.module("Foo", function(){
@@ -366,8 +368,8 @@ for you if they don't exist. If they do exist, though, the
 existing module will be used instead of creating a new one.
 
 Таким образом, в момент задания подмодулей с помощью dot-нотации, родительские модули не обязательно
-должны уже существовать. Они будут автоматически созданы, если их еще нет - если же они существуют,
-то будут задействованы именно эти, существующие модули - новых же создано не будет.
+должны уже существовать. Они будут автоматически созданы, если их еще нет, - если же они существуют,
+то будут задействованы именно они - новых же создано не будет.
 
 ## Module Definitions
 
@@ -421,11 +423,14 @@ MyApp.MyModule.someFunction(); //=> публичный метод
 Modules have initializers, similarly to `Application` objects. A module's
 initializers are run when the module is started.
 
+Модули снабжены инициализаторами, подобно объекту Приложения. Инициализаторы модуля - это те функции,
+которые выполнятся, когда модуль будет запущен.
+
 ```js
 MyApp.module("Foo", function(Foo){
 
   Foo.addInitializer(function(){
-    // initialize and start the module's running code, here.
+    // код, который должен выполниться при запуске
   });
 
 });
@@ -469,8 +474,6 @@ MyApp.module("Foo", function(Foo){
   this === Foo; //=> true
 });
 ```
-
-## Custom Arguments
 ## Аргументы, определенные пользователем
 
 You can provide any number of custom arguments to your module, after the
