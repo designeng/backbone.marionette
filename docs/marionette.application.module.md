@@ -26,19 +26,19 @@ your application, and serve as an event aggregator in themselves.
   * [Запуск подмодулей их владельцами](#starting-sub-modules-with-parent)
   * [Остановка модулей](#stopping-modules)
   * [Остановка рассылки событий](#stop-events)
-* [Defining Sub-Modules With . Notation](#defining-sub-modules-with--notation)
+* [Определение подмодулей при помощи .(dot) нотации](#defining-sub-modules-with--notation)
 * [Module Definitions](#module-definitions)
   * [Module Initializers](#module-initializers)
   * [Module Finalizers](#module-finalizers)
 * [The Module's `this` Argument](#the-modules-this-argument)
-* [Custom Arguments](#custom-arguments)
-* [Splitting A Module Definition Apart](#splitting-a-module-definition-apart)
+* [Аргументы, определенные пользователем](#custom-arguments)
+* [Разбиение описания модуля на отдельные части](#splitting-a-module-definition-apart)
 
 ## Основы использования
 
 A module is defined directly from an Application object as the specified
 name:
-Модуль определяется непосредственно из объекта Приложения - для этого модулю назначается определенное имя:
+Модуль определяется непосредственно из объекта Приложения - для этого модулю назначается  имя:
 
 ```js
 var MyApp = new Backbone.Marionette.Application();
@@ -75,13 +75,11 @@ module that you need in your tests.
 
 Запуск модуля может быть произведен одним из двух способов:
 
-1. Автоматически из внешнего модуля (или из Приложения) (срабатывает метод `.start()`)
-2. Вручную, вызывая метод `.start()`
+1. Автоматически из внешнего модуля (или из Приложения), когда будет вызван метод `.start()` внешнего модуля (Приложения)
+2. Вручную, вызывая метод `.start()` самого модуля.
 
-In this example, the module will be started automatically with the parent
-application object's `start` call:
-В этом примере модуль будет запущен автоматически из объекта родительского приложения
-путем вызовом метода `start`:
+В этом примере модуль будет запущен автоматически, когда на объекте родительского приложения
+выполнится его метод `start`:
 
 ```js
 MyApp = new Backbone.Marionette.Application();
@@ -124,42 +122,48 @@ mod.on("start", function(){
 #### Passing Data to Start Events
 
 `.start` takes a single `options` parameter that will be passed to start events and their equivalent methods (`onStart` and `onBeforeStart`.) 
+Метод `.start` принимает один-единственный параметр -  `options`, который 
+будет передан start-событиям и их функциональным эквивалентам (`onStart` and `onBeforeStart`.) 
 
 ```js
 var mod = MyApp.module("MyMod");
 
 mod.on("before:start", function(options){
-  // do stuff before the module is started
+  // делаем что-то до старта модуля
 });
 
 mod.on("start", function(options){
-  // do stuff after the module has been started
+  // и что-то после того, как модуль запущен
 });
 
 var options = {
- // any data
+ // какие-то данные
 };
 mod.start(options);
 ```
 
 ### Preventing Auto-Start Of Modules
+### Предотвращение автозапуска модулей
 
 If you wish to manually start a module instead of having the application
 start it, you can tell the module definition not to start with the parent:
 
+Если вы хотите запускать модуль вручную, вместо того, чтобы предоставить этот процесс приложению,
+вы можете явным образом указать в параметрах определения модуля:
+
 ```js
 var fooModule = MyApp.module("Foo", function(){
 
-  // prevent starting with parent
+  // не запускать родителем
   this.startWithParent = false;
 
-  // ... module code goes here
+  // ... код модуля идет здесь
 });
 
-// start the app without starting the module
+// запуск приложения
 MyApp.start();
 
-// later, start the module
+// и позже, запуск модуля
 fooModule.start();
 ```
 
@@ -168,22 +172,32 @@ the module, and the presence of the `startWithParent` attribute, to tell it
 not to start with the application. Then to start the module, the module's 
 `start` method is manually called.
 
+Обратите внимание на использование объектного литерала вместо просто функции для определения модуля,
+и присутствие аттрибута `startWithParent`, говорящего модулю, что он не должен запускаться вместе с запуском приложения. Теперь, чтобы запустить модуль, метод модуля `start` долен быть вызван вручную.
+
 You can also grab a reference to the module at a later point in time, to
 start it:
+
+Вы также можете получить ссылку на модуль в какой-то более поздний момент времени,
+чтобы запустить его:
 
 ```js
 MyApp.module("Foo", function(){
   this.startWithParent = false;
 });
 
-// start the module by getting a reference to it first
+// получаем ссылку - и запускаем модуль 
 MyApp.module("Foo").start();
 ```
 
 #### Specifying `startWithParent: false` setting as an object literal
+#### Задание `startWithParent: false` в объектном литерале 
 
 There is a second way of specifying `startWithParent` in a `.module`
 call, using an object literal:
+
+Второй способ задания директивы `startWithParent` в методе `.module` - 
+это использование объектного литерала:
 
 ```js
 var fooModule = MyApp.module("Foo", { startWithParent: false });
@@ -192,27 +206,39 @@ var fooModule = MyApp.module("Foo", { startWithParent: false });
 This is most useful when defining a module across multiple files and
 using a single definition to specify the `startWithParent` option.
 
+Это наиболее удобный способ, когда у нас есть громоздкий модуль, для описания которого требуется
+не один файл, а несколько, и мы используем отдельное описане для задания директивы `startWithParent`.
+
 If you wish to combine the `startWithparent` object literal
 with a module definition, you can include a `define` attribute on
 the object literal, set to the module function:
+
+Если вы хотите объединить объектный литерал, описывающий `startWithParent`, с дифиницией модуля,
+вы можете включить аттрибут `define` в объектный литерал, переданный в функцию создания модуля:
 
 ```js
 var fooModule = MyApp.module("Foo", {
   startWithParent: false,
 
   define: function(){
-    // module code goes here
+    // здесь идет код модуля
   }
 });
 ```
 
 ### Starting Sub-Modules With Parent
+### Запуск подмодулей родителем
 
 Starting of sub-modules is done in a depth-first hierarchy traversal. 
 That is, a hierarchy of `Foo.Bar.Baz` will start `Baz` first, then `Bar`,
 and finally `Foo.
 
-Submodules default to starting with their parent module. 
+Запуск подмодулей совершается в порядке, обратном порядку иерархии - то-есть из глубины. Например, в иерархии `Foo.Bar.Baz` сначала будет запущен `Baz`-модуль, потом `Bar`, и, наконец, `Foo`.
+
+
+
+Submodules default to starting with their parent module.
+По умолчанию, запуск подмодуля производится с запуском его родителя.
 
 ```js
 MyApp.module("Foo", function(){...});
@@ -225,8 +251,13 @@ In this example, the "Foo.Bar" module will be started with the call to
 `MyApp.start()` because the parent module, "Foo" is set to start
 with the app.
 
+В этом примере модуль "Foo.Bar" будет запущен, когда метод `MyApp.start()`
+будет вызван, поскольку его модуль-родитель "Foo" обязан запуститься одновременно со стартом приложения.
+
 A sub-module can override this behavior by setting it's `startWithParent`
 to false. This prevents it from being started by the parent's `start` call.
+
+Но, как уже должно быть ясно, это поведение в подмодуле может быть переопределено, если значение директивы `startWithParent` задано как false. Это предохранит его от запуска в момент вызова метода `start` его родителя.
 
 ```js
 MyApp.module("Foo", function(){...});
@@ -241,20 +272,31 @@ MyApp.start();
 Now the module "Foo" will be started, but the sub-module "Foo.Bar" will
 not be started.
 
+Теперь модуль "Foo" будет запущен, а подмодуль "Foo.Bar" - нет.
+
 A sub-module can still be started manually, with this configuration:
+Подмодуль, тем не менее, может быть запущен вручную:
 
 ```js
 MyApp.module("Foo.Bar").start();
 ```
 
 ### Stopping Modules
+### Выключение модулей
 
 A module can be stopped, or shut down, to clear memory and resources when
 the module is no longer needed. Like starting of modules, stopping is done
 in a depth-first hierarchy traversal. That is, a hierarchy of modules like
 `Foo.Bar.Baz` will stop `Baz` first, then `Bar`, and finally `Foo`.
 
+Модуль может быть остановлен, или "выключен", чтобы очистить занимаемые ресурсы,
+когда модуль больше не нужен. Подобно запуску, остановка происходит в порядке обратном
+порядку иерархии, "из глубины". Так, в иерархии модулей `Foo.Bar.Baz` 
+сначала будет остановлен `Baz`-модуль, потом `Bar`, и, наконец, `Foo`.
+
 To stop a module and it's children, call the `stop()` method of a module.
+
+Чтобы выключить модуль и все его подмодули, достаточно вызвать метод модуля `stop()`.
 
 ```js
 MyApp.module("Foo").stop();
@@ -263,6 +305,10 @@ MyApp.module("Foo").stop();
 Modules are not automatically stopped by the application. If you wish to 
 stop one, you must call the `stop` method on it. The exception to this is
 that stopping a parent module will stop all of it's sub-modules.
+
+Модули не выключаются автоматически Приложением. Если вы хотите остановить какой-либо модуль,
+вам нужно явно вызвать его метод `stop`. Исключение составляет то обстоятельство, что с выключением
+внешнего модуля будут выключены и все его подмодули.
 
 ```js
 MyApp.module("Foo.Bar.Baz");
@@ -274,11 +320,18 @@ This call to `stop` causes the `Bar` and `Baz` modules to both be stopped
 as they are sub-modules of `Foo`. For more information on defining
 sub-modules, see the section "Defining Sub-Modules With . Notation".
 
-### Stop Events
+Вызов `stop` в данном случае повлечет выключение `Bar` и `Baz`, поскольку они
+подмодули `Foo`. (Для детальной информации по определению подмодулей см. раздел
+"Определение подмодулей при помощи .(dot) нотации"). 
+
+### События при остановке модуля
 
 When stopping a module, a "before:stop" event will be triggered prior
 to any of the finalizers being run. A "stop" event will then be triggered
 after they have been run.
+
+Когда модуль останавливается, прежде чем какие-либо заключительные действия (finalizers) будут произведены,
+разошлется специальное событие "before:stop". И, по аналогии со "start"-событием, событие "stop" будет разослано, после того, как сработают заключительные действия (finalizers).
 
 ```js
 var mod = MyApp.module("MyMod");
@@ -333,7 +386,7 @@ and data by using locally scoped variables.
 ```js
 MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _){
 
-  // Private Data And Functions
+  // Приватные свойства и методы
   // --------------------------
 
   var myData = "this is private data";
@@ -343,7 +396,7 @@ MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _){
   }
 
 
-  // Public Data And Functions
+  // Публичные свойства и методы
   // -------------------------
 
   MyModule.someData = "public data";
@@ -353,8 +406,8 @@ MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _){
   }
 });
 
-console.log(MyApp.MyModule.someData); //=> public data
-MyApp.MyModule.someFunction(); //=> public data
+console.log(MyApp.MyModule.someData); //=> публичное свойство
+MyApp.MyModule.someFunction(); //=> публичный метод
 ```
 
 ### Module Initializers
@@ -376,8 +429,12 @@ Any way of starting this module will cause it's initializers to run. You
 can have as many initializers for a module as you wish.
 
 ### Module Finalizers
+### "Завершители" модуля (module finalizers)
 
 Modules also have finalizers that are run when a module is stopped.
+
+Модуль также включает в свой состав "завершители" - т.е. функции, которые будут вызваны,
+когда модуль останавливается.
 
 ```js
 MyApp.module("Foo", function(Foo){
@@ -392,9 +449,14 @@ MyApp.module("Foo", function(Foo){
 Calling the `stop` method on the module will run all that module's 
 finalizers. A module can have as many finalizers as you wish.
 
+Вызов метода `stop` на конкретном модуле приведет к вызову всех "завершителей" 
+данного модуля. Модуль может иметь сколько угодно "завершителей".
+
 ## The Module's `this` Argument
 
 The module's `this` argument is set to the module itself.
+
+Аргумент модуля `this` указывает на сам этот модуль.
 
 ```js
 MyApp.module("Foo", function(Foo){
@@ -403,11 +465,16 @@ MyApp.module("Foo", function(Foo){
 ```
 
 ## Custom Arguments
+## Аргументы, определенные пользователем
 
 You can provide any number of custom arguments to your module, after the
 module definition function. This will allow you to import 3rd party
 libraries, and other resources that you want to have locally scoped to
 your module.
+
+Вы можете передать модулю любое количество пользовательских аргументов,
+сделать это при необходимости можно после определяющей модуль функции, как указано в примере:
+
 
 ```js
 MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _, Lib1, Lib2, LibEtc){
@@ -420,10 +487,14 @@ MyApp.module("MyModule", function(MyModule, MyApp, Backbone, Marionette, $, _, L
 ```
 
 ## Splitting A Module Definition Apart
+## Разбиение описания модуля на отдельные части
 
 Sometimes a module gets to be too long for a single file. In
 this case, you can split a module definition across multiple
 files:
+
+Иногда модуль становится слишком большим, и для его описания становится удобнее разбить
+модуль на отдельные фрагменты, которые представлены в ряде файлов: 
 
 ```js
 MyApp.module("MyModule", function(MyModule){
