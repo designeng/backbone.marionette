@@ -5,19 +5,27 @@ including sub-modules hanging from that module. This is useful for creating
 modular, encapsulated applications that are split apart in to multiple 
 files.
 
+Marionette разрешает вам регистрировать собственные модули внутри приложения,
+включая подмодули, зависящие от определенного модуля. Это полезно для создания
+сложных приложений, где каждый модуль инкапсулирует свои собственные свойства и методы,
+а функциональность, благодаря модульной структуре приложения, вынесена в отдельные файлы. 
+
 Marionette's modules allow you to have unlimited sub-modules hanging off of
 your application, and serve as an event aggregator in themselves.
 
+Модули в Marionette могут иметь неограниченное количество подмодулей, зависящих от 
+вашего приложения, и являющихся самими по себе агрегаторами событий.
+
 ## Documentation Index
 
-* [Basic Usage](#basic-usage)
-* [Starting And Stopping Modules](#starting-and-stopping-modules)
-  * [Starting Modules](#starting-modules)
-  * [Start Events](#start-events)
-  * [Preventing Auto-Start Of Modules](#preventing-auto-start-of-modules)
-  * [Starting Sub-Modules With Parent](#starting-sub-modules-with-parent)
-  * [Stopping Modules](#stopping-modules)
-  * [Stop Events](#stop-events)
+* [Основы использования](#basic-usage)
+* [Запуск и остановка модулей](#starting-and-stopping-modules)
+  * [Запуск модулей](#starting-modules)
+  * [Рассылка событий](#start-events)
+  * [Предохранение от самозапуска модулей](#preventing-auto-start-of-modules)
+  * [Запуск подмодулей их владельцами](#starting-sub-modules-with-parent)
+  * [Остановка модулей](#stopping-modules)
+  * [Остановка рассылки событий](#stop-events)
 * [Defining Sub-Modules With . Notation](#defining-sub-modules-with--notation)
 * [Module Definitions](#module-definitions)
   * [Module Initializers](#module-initializers)
@@ -26,10 +34,11 @@ your application, and serve as an event aggregator in themselves.
 * [Custom Arguments](#custom-arguments)
 * [Splitting A Module Definition Apart](#splitting-a-module-definition-apart)
 
-## Basic Usage
+## Основы использования
 
 A module is defined directly from an Application object as the specified
 name:
+Модуль определяется непосредственно из объекта Приложения - для этого модулю назначается определенное имя:
 
 ```js
 var MyApp = new Backbone.Marionette.Application();
@@ -45,7 +54,10 @@ If you specify the same module name more than once, the
 first instance of the module will be retained and a new
 instance will not be created.
 
-## Starting And Stopping Modules
+Если вы определите модуль с одним и тем же именем более одного раза,
+первый экземпляр сохранится в памяти, а второй просто не будет создан.
+
+## Запуск и остановка модулей
 
 Modules can be started and stopped independently of the application and
 of each other. This allows them to be loaded asynchronously, and also allows
@@ -53,22 +65,30 @@ them to be shut down when they are no longer needed. This also facilitates
 easier unit testing of modules in isolation as you can start only the
 module that you need in your tests.
 
-### Starting Modules
+Модули могут быть запущены/остановлены независимым образом: инициатором запуска/остановки 
+может являться как само приложение, так и другой модуль. Это позволяет им независимо и асинхронно 
+загружаться в приложение, и также дает возможность выгрузить их в один прекрасный момент, когда
+они больше не используются. Такой подход значительно облегчает жизнь тестировщику: каждый модуль 
+может быть запущен и протестирован изолированно.
 
-Starting a module is done in one of two ways:
+### Запуск модулей
 
-1. Automatically with the parent module (or Application) `.start()` method
-2. Manually call the `.start()` method on the module
+Запуск модуля может быть произведен одним из двух способов:
+
+1. Автоматически из внешнего модуля (или из Приложения) (срабатывает метод `.start()`)
+2. Вручную, вызывая метод `.start()`
 
 In this example, the module will be started automatically with the parent
 application object's `start` call:
+В этом примере модуль будет запущен автоматически из объекта родительского приложения
+путем вызовом метода `start`:
 
 ```js
 MyApp = new Backbone.Marionette.Application();
 
 MyApp.module("Foo", function(){
 
-  // module code goes here
+  // здесь идет код модуля
 
 });
 
@@ -77,22 +97,27 @@ MyApp.start();
 
 Note that modules loaded and defined after the `app.start()` call will still
 be started automatically.
+Следует заметить, что модули, загруженные и определенные даже после вызова `app.start()`
+все равно будут запускаться автоматически.
 
 ### Start Events
 
 When starting a module, a "before:start" event will be triggered prior
 to any of the initializers being run. A "start" event will then be 
 triggered after they have been run.
+Во время запуска модуля произойдут два события: "before:start" и "start".
+До всяких действий по инициализации будет вброшено событие "before:start".
+Само событие "start" будет запущено только после инициализация модуля.
 
 ```js
 var mod = MyApp.module("MyMod");
 
 mod.on("before:start", function(){
-  // do stuff before the module is started
+  // делаем что-то до старта модуля
 });
 
 mod.on("start", function(){
-  // do stuff after the module has been started
+  // и что-то после того, как модуль запущен
 });
 ```
 
