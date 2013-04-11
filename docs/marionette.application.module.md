@@ -150,7 +150,7 @@ mod.start(options);
 If you wish to manually start a module instead of having the application
 start it, you can tell the module definition not to start with the parent:
 
-Если вы хотите запускать модуль вручную, вместо того, чтобы предоставить этот процесс приложению,
+Если вы предполагаете запускать модуль вручную, вместо того, чтобы предоставить этот процесс приложению,
 вы можете явным образом указать в параметрах определения модуля:
 
 ```js
@@ -229,7 +229,7 @@ var fooModule = MyApp.module("Foo", {
 ```
 
 ### Starting Sub-Modules With Parent
-### Запуск подмодулей родителем
+### Запуск подмодулей их родителем
 
 Starting of sub-modules is done in a depth-first hierarchy traversal. 
 That is, a hierarchy of `Foo.Bar.Baz` will start `Baz` first, then `Bar`,
