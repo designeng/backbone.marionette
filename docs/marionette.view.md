@@ -13,35 +13,36 @@ to be extended from, and to provide a common location for
 behaviors that are shared across all views.
 
 **Замечание:** Базовое представление `Marionette.View` не предназначено
-для использования напрямую. Оно существует всего лишь как основа для дальнейшего расширения,
+для использования напрямую. Оно присутствует в фреймворке как основа для дальнейшего расширения,
 в качестве исходного прототипа для будущих представлений вашего приложения.
 
 
 
 ## Documentation Index
 
-* [Binding To View Events](#binding-to-view-events)
-* [View close](#view-close)
-* [View onBeforeClose](#view-onbeforeclose)
-* [View "dom:refresh" / onDomRefresh event](#view-domrefresh--ondomrefresh-event)
+* [Привязка обработчиков к событиям представления](#binding-to-view-events)
+* [Метод View.close](#view-close)
+* [Метод View.onBeforeClose](#view-onbeforeclose)
+* [Событие "dom:refresh" / метод onDomRefresh](#view-domrefresh--ondomrefresh-event)
 * [View.triggers](#viewtriggers)
-* [View.modelEvents and View.collectionEvents](#viewmodelevents-and-viewcollectionevents)
-* [View.serializeData](#viewserializedata)
-* [View.bindUIElements](#viewbinduielements)
-* [View.templateHelpers](#viewtemplatehelpers)
-  * [Basic Example](#basic-example)
-  * [Accessing Data Within The Helpers](#accessing-data-within-the-helpers)
-  * [Object Or Function As `templateHelpers`](#object-or-function-as-templatehelpers)
-* [Change Which Template Is Rendered For A View](#change-which-template-is-rendered-for-a-view)
+* [Аттрибуты View.modelEvents and View.collectionEvents](#viewmodelevents-and-viewcollectionevents)
+* [Метод View.serializeData](#viewserializedata)
+* [Метод View.bindUIElements](#viewbinduielements)
+* [Аттрибут View.templateHelpers](#viewtemplatehelpers)
+  * [Пример](#basic-example)
+  * [Доступ к данным внутри хелперов](#accessing-data-within-the-helpers)
+  * [Объект или функция в качестве `templateHelpers`](#object-or-function-as-templatehelpers)
+* [Замена шаблона представления](#change-which-template-is-rendered-for-a-view)
 
 ## Binding To View Events
+## Привязка обработчиков к событиям представления
 
 Marionette.View extends `Marionette.BindTo`. It is recommended that you use
 the `listenTo` method to bind model, collection, or other events from Backbone
 and Marionette objects.
 
 Marionette.View является расширением `Marionette.BindTo`. Рекомендуется
-использовать метод `listenTo` для привязки к событиям моделей, коллекций, или для прослушивания
+использовать метод `listenTo` для привязки обработчиков к событиям моделей, коллекций, или для прослушивания
 любых других событий, поступающих из объектов Backbone и Marionette.
 
 ```js
@@ -67,7 +68,7 @@ optionally set the context by passing in the context object as the
 установлен. Вы можете опционально менять контекст, передавая контекстный объект 
 в качестве 4-го параметра в функцию `listenTo`.
 
-## View close
+## Метод close
 
 View implements a `close` method, which is called by the region
 managers automatically. As part of the implementation, the following
@@ -474,7 +475,7 @@ templateHelpers: {
 }
 ```
 
-### Object Or Function As `templateHelpers`
+### Объект или функция в качестве `templateHelpers`
 
 You can specify an object literal (as shown above), a reference
 to an object literal, or a function as the `templateHelpers`. 
