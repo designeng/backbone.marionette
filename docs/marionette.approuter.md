@@ -3,6 +3,9 @@
 Reduce the boilerplate code of handling route events and then calling a single method on another object.
 Have your routers configured to call the method on your object, directly.
 
+Служит для уменьшения количества шаблонного кода для обработки событий роутера (route events) и вызова определенного метода на другом объекте.
+Позволяет конфигуровать роутеры, напрямую привязывая их к вызовам методов целевого объекта.
+
 
 
 ## Documentation Index
@@ -14,8 +17,7 @@ Have your routers configured to call the method on your object, directly.
 
 Configure an AppRouter with `appRoutes`. The route definition is passed on to Backbone's standard routing handlers. This means that you define routes like you normally would.  However, instead of providing a callback method that exists on the router, you provide a callback method that exists on the controller, which you specify for the router instance (see below.)
 
-AppRouter приложения должен быть сконфигурирован с помощью `appRoutes`. Описание роутеров
-Это значит, что вы определяете роутеры как будто бы вы имеете дело с обычным Backbone-маршрутизатором.
+AppRouter приложения должен быть сконфигурирован с помощью `appRoutes`. Определение роутера передается на стандартные обработчики роутеров, как это принято в Backbone. Это значит, что вы определяете роутеры как будто бы вы имеете дело с обычным Backbone-маршрутизатором.
 Однако, вместо того, чтобы помещать функцию, обрабатывающую экземпляр пути, внутри роутера,
 вам следует добавить ее в соответствующий конструктор (см. ниже)
 
@@ -48,8 +50,8 @@ You can also add standard routes to an AppRouter with methods on the router.
 App routers can only use one `controller` object. You can either specify this
 directly in the router definition:
 
-Каждый роутер приложения может использовать только один контроллер.
-Вы можете также назначить контроллер прямо в определении роутера:
+AppRouter может использовать только один объект контроллера.
+Вы можете обозначить это прямо в определении роутера:
 
 ```js
 someController = {
@@ -77,7 +79,7 @@ The object that is used as the `controller` has no requirements, other than it w
 contain the methods that you specified in the `appRoutes`.
 
 К объекту, используемому в качестве контроллера, не предъявляется никаких особенных требований,
-кроме одного: он должен содержать все те методы, каторые вы определили в объекте `appRoutes`.
+кроме одного: он должен содержать все те методы, каторые вы определили в `appRoutes`.
 
 It is recommended that you divide your controller objects into smaller pieces of related functionality
 and have multiple routers / controllers, instead of just one giant router and controller.

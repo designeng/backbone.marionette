@@ -377,15 +377,22 @@ You can specify a callback function to provide a definition
 for the module. Module definitions are invoked immediately
 on calling `module` method. 
 
-The module definition callback will receive 6 parameters:
+## Определение модуля
 
-* The module itself
-* The Parent module, or Application object that `.module` was called from
-* Backbone
-* Backbone.Marionette
-* jQuery
-* Underscore
-* Any custom arguments
+Чтобы определить модуль, вы можете задать функцию обратного вызова.
+
+Определение модуля состоится немедленно после вызова метода `module`.
+
+
+Данная функция принимает 6 различных параметров:
+
+1. сам данный модуль
+2. модуль-родитель, или объект приложения, вызывающий данный модуль
+3. Backbone
+4. Backbone.Marionette
+5. jQuery
+6. Underscore
+7. любые пользовательские аргументы
 
 You can add functions and data directly to your module to make
 them publicly accessible. You can also add private functions
@@ -438,6 +445,8 @@ MyApp.module("Foo", function(Foo){
 
 Any way of starting this module will cause it's initializers to run. You
 can have as many initializers for a module as you wish.
+
+Любой способ запуска данного модуля заставит сработать его инициализатор. Модуль может иметь сколько угодно инициализаторов.
 
 ### Module Finalizers
 ### "Завершители" модуля (module finalizers)
