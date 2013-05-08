@@ -4,8 +4,8 @@ Marionette has a base `Marionette.View` type that other views extend from.
 This base view provides some common and core functionality for
 other views to take advantage of.
 
-В состав Marionette входит `Marionette.View` - базовое представление, которое берут за основу
-другие представления, расширяющие его общую для всех представлений функциональность.
+В состав Marionette входит `Marionette.View` - базовое представление c общей функциональностью, которое расширяют
+другие представления.
 
 **Note:** The `Marionette.View` type is not intended to be 
 used directly. It exists as a base view for other view types
@@ -41,7 +41,7 @@ Marionette.View extends `Marionette.BindTo`. It is recommended that you use
 the `listenTo` method to bind model, collection, or other events from Backbone
 and Marionette objects.
 
-Marionette.View является расширением `Marionette.BindTo`. Рекомендуется
+Marionette.View расширяет `Marionette.BindTo`. Рекомендуется
 использовать метод `listenTo` для привязки обработчиков к событиям моделей, коллекций, или для прослушивания
 любых других событий, поступающих из объектов Backbone и Marionette.
 
@@ -65,7 +65,7 @@ optionally set the context by passing in the context object as the
 4th parameter of `listenTo`.
 
 Контекст (на него указывает ключевое слово `this`) будет автоматически
-установлен. Вы можете опционально менять контекст, передавая контекстный объект 
+установлен для данного представления. Вы можете опционально менять контекст, передавая контекстный объект 
 в качестве 4-го параметра в функцию `listenTo`.
 
 ## Метод close
@@ -74,8 +74,7 @@ View implements a `close` method, which is called by the region
 managers automatically. As part of the implementation, the following
 are performed:
 
-Представление реализует метод `close`, который автоматически вызывается RegionManagers.
-Детали реализации предполагают выполнение следующих действий:
+Представление реализует метод `close`, который автоматически вызывается [регионами при их закрытии](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.region.js#L155-L166). Детали реализации предполагают выполнение следующих действий:
 
 * unbind all `listenTo` events
 * unbind all custom view events
@@ -116,8 +115,8 @@ be closed. Any other return value (including null or undefined) will
 allow the view to be closed.
 
 Точно так же и метод `onBeforeClose` будет вызван, если он задан в представлении.
-Если этот метод вернет `false`, представление не будет выключено. Любые другие значения
-(включая null и undefined) не помешают представлению выключиться. 
+Если этот метод вернет `false`, представление не будет закрыто. Любые другие значения
+(включая null и undefined) не помешают представлению закрыться. 
 
 ```js
 MyView = Marionette.View.extend({
@@ -139,9 +138,15 @@ v.close(); // представление останется
 Triggered after the view has been rendered, has been shown in the DOM via a Marionette.Region, and has been
 re-rendered.
 
+Возникает в троех случаях: после того, как представление отрендерено, показано в DOM-е через Marionette.Region, или ре-рендерено.
+
+
+
 This event / callback is useful for 
 [DOM-dependent UI plugins](http://lostechies.com/derickbailey/2012/02/20/using-jquery-plugins-and-ui-controls-with-backbone/) such as 
 [jQueryUI](http://jqueryui.com/) or [KendoUI](http://kendoui.com).
+
+Данное событие, или данный колбэк могут оказаться полезными при использовании сторонних библиотек, [зависящих от DOM](http://lostechies.com/derickbailey/2012/02/20/using-jquery-plugins-and-ui-controls-with-backbone/), таких как [jQueryUI](http://jqueryui.com/) или [KendoUI](http://kendoui.com).
 
 ```js
 Backbone.Marionette.ItemView.extend({
@@ -164,9 +169,15 @@ widget suites), see [this blog post on KendoUI + Backbone](http://www.kendoui.co
 Views can define a set of `triggers` as a hash, which will 
 convert a DOM event into a `view.triggerMethod` call.
 
+Представления могут определять ряд триггеров событий в качестве хеша, 
+где что-то происходящее с DOM-элементами конвертируется в вызов соответствующих `view.triggerMethod`.
+
 The left side of the hash is a standard Backbone.View DOM
 event configuration, while the right side of the hash is the
 view event that you want to trigger from the view.
+
+Левая часть хеша - стандартная запись, принятая в Backbone.View для событий в DOM,
+правая - события представления, которые могут быть порождены и обработаны в представлении.
 
 ```js
 MyView = Backbone.Marionette.ItemView.extend({
@@ -181,11 +192,11 @@ view = new MyView();
 view.render();
 
 view.on("something:do:it", function(args){
-  alert("I DID IT!");
+  alert("событие конвертировано!");
 });
 
-// "click" the 'do-something' DOM element to 
-// demonstrate the DOM event conversion
+// кликнем элемент с классом 'do-something'
+// для демонстрации конвертации DOM-события
 view.$(".do-something").trigger("click");
 ```
 
@@ -193,6 +204,8 @@ The result of this is an alert box that says, "I DID IT!"
 
 You can also specify the `triggers` as a function that 
 returns a hash of trigger configurations
+
+Вы можете также задать триггеры как функцию, возвращающую сконфигурированный хеш:
 
 ```js
 Backbone.Marionette.CompositeView.extend({
@@ -207,16 +220,24 @@ Backbone.Marionette.CompositeView.extend({
 Triggers work with all View types that extend from the base
 Marionette.View.
 
+Триггеры работают со всеми представлениями, произведенными от базового Marionette.View.
+
 ### Trigger Handler Arguments
+
+### Аргументы, передаваемые в trigger-обработчики
 
 A `trigger` event handler will receive a single argument that
 includes the following:
+
+Обработчики событий, сконфигурированных в `trigger`, получают единственный аргумент, который включает в себя поля:
 
 * view
 * model
 * collection
 
 These properties match the `view`, `model`, and `collection` properties of the view that triggered the event.
+
+Эти свойства соответствуют свойствам `view`, `model`, и `collection` представления, породившего событие.
 
 ```js
 MyView = Backbone.Marionette.ItemView.extend({
@@ -324,6 +345,8 @@ This works in both `modelEvents` and `collectionEvents`.
 
 ### Callbacks As Function
 
+### Конфигурация колбэков в качестве функции
+
 A single function can be declared directly in-line instead of specifying a
 callback via a string method name.
 
@@ -345,7 +368,7 @@ This works for both `modelEvents` and `collectionEvents`.
 
 Это справедливо как для `modelEvents`, так и для `collectionEvents`.
 
-### Конфигурация событий в виде функции
+### Конфигурация событий в качестве функции
 
 A function can be used to declare the event configuration as long as
 that function returns a hash that fits the above configuration options.
@@ -391,7 +414,7 @@ See ItemView documentation for examples.
 чтобы получать от них какие-то данные, или манипулировать самими элементами.
 Например, если у вас имеется какой-то элемент, который в зависимости от его состояния требуется
 показать или скрыть, или стоит задача добавить некоторый класс к определенному элементу.
-Вместо того, чтобы жонглировать jQuery-селекторами по всему коду превставления,
+Вместо того, чтобы жонглировать jQuery-селекторами по всему коду представления,
 вы можете просто задать `ui` хеш, который определит четкое соответствие между именами элементов
 пользовательского интерфейса и их jQuery-селекторами. Впоследствии вы можете обращаться к ним
 с помощью конструкции `this.ui.elementName`. Примеры находятся в разделе, посвященном Marionette.ItemView.
@@ -406,7 +429,7 @@ In ItemView and CompositeView this is already taken care of.
 вызывать метод `bindUIElements` из метода `render` вашего представления.
 В Marionette.ItemView and Marionette.CompositeView об этом уже позаботились.
 
-## Аттрибут View.templateHelpers
+## Атрибут View.templateHelpers
 
 There are times when a view's template needs to have some
 logic in it and the view engine itself will not provide an
