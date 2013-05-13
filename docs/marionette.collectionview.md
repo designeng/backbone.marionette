@@ -5,6 +5,9 @@ specified collection, render each of them using a specified `itemView`,
 then append the results of the item view's `el` to the collection view's
 `el`.
 
+`CollectionView` проходит циклом по всем моделям, представленным в данной коллекции,
+отображает их посредством определенного `itemView`, и все `el` из `itemView`, с отрендеренным в них html, добавляет в `el` `сollectionView`.
+
 ## Documentation Index
 
 * [CollectionView's `itemView`](#collectionviews-itemview)
@@ -35,9 +38,13 @@ then append the results of the item view's `el` to the collection view's
 
 ## CollectionView's `itemView`
 
+## CollectionView: `itemView`
+
 Specify an `itemView` in your collection view definition. This must be
 a Backbone view object definition, not an instance. It can be any 
 `Backbone.View` or be derived from `Marionette.ItemView`.
+
+Задает `itemView` для `сollectionView`, и является не конкретным экземпляром, а объектом, выводимым (extended) из `Backbone.View` или `Marionette.ItemView`.
 
 ```js
 MyItemView = Backbone.Marionette.ItemView.extend({});
@@ -50,6 +57,8 @@ Backbone.Marionette.CollectionView.extend({
 Alternatively, you can specify an `itemView` in the options for
 the constructor:
 
+В качестве  альтернативы, вы можете определить `itemView` в конструкторе:
+
 ```js
 MyCollectionView = Backbone.Marionette.CollectionView.extend({...});
 
@@ -61,8 +70,12 @@ new MyCollectionView({
 If you do not specify an `itemView`, an exception will be thrown
 stating that you must specify an `itemView`.
 
+Если `itemView` не определен, [будет брошено исключение с соответствующим предупреждением](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L125-L127).
+
 If you need a view specific to your model, you can override 
 `getItemView`:
+
+Если от данных модели зависит, как будет выглядеть реализация `itemView`, `getItemView` может быть переопределен: 
 
 ```js
 Backbone.Marionette.CollectionView.extend({
