@@ -33,7 +33,4 @@ Backbone.$ = myDOMLib;
 Mariоnеtte.$ = myDOMLib;
 ```
 
-Note that you should change both Backbone and Marionette at the same
-time, to the same DOM manipulation library.
-
 То-есть одновременно настроить и Backbone и Marionette для работы с конкретной DOM-ориентированной библиотекой.
