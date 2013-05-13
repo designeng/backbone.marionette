@@ -4,6 +4,9 @@ An `ItemView` is a view that represents a single item. That item may be a
 `Backbone.Model` or may be a `Backbone.Collection`. Whichever it is though, it
 will be treated as a single item. 
 
+`ItemView` - это представление, которое представляет собой отдельную сущность, будь то `Backbone.Model` или `Backbone.Collection`.
+Что бы данное представление ни описывало, оно будет рассматриваться как цельный одиночный объект.
+
 ## Documentation Index
 
 * [ItemView render](#itemview-render)
@@ -19,11 +22,17 @@ will be treated as a single item.
 
 ## ItemView render
 
+## Отображение ItemView 
+
 An item view has a `render` method built in to it, and uses the
 `Renderer` object to do the actual rendering.
 
+ItemView включает в себя встроенный метод `render`, и использует объект `Renderer` для отображения.
+
 You should provide a `template` attribute on the item view, which
 will be either a jQuery selector:
+
+Необходимо определить аттрибут `template` с описанием шаблона для экземпляра ItemView с jQuery-селектором:
 
 ```js
 MyView = Backbone.Marionette.ItemView.extend({
@@ -34,6 +43,8 @@ new MyView().render();
 ```
 
 .. or a function taking a single argument: the object returned by [ItemView.serializeData](#itemview-serializedata):
+
+...или функцию, принимающую единственный аргумент и возвращающую серелизованный объект: [ItemView.serializeData](#itemview-serializedata):
 
 ```js
 my_template_html = '<div><%= args.name %></div>'
@@ -53,11 +64,19 @@ new MyView().render();
 Note that using a template function allows passing custom arguments into the _.template function,
 including a third "settings" argument, as used in the example above.
 
+Заметьте, что использование фушкции в данном случае предполагает передачу ряда пользовательских аргументов в функцию _.template,
+включая третьим из них аргумента с настройками, как показано в примере выше.
+
 According to the [Underscore docs](http://underscorejs.org/#template), using the "variable" setting
 "can significantly improve the speed at which a template is able to render." Using this setting
 also requires you to read data arguments from an object, as demonstrated in the example above.
 
+Согласно описанию функции _.template в [документации](http://underscorejs.org/#template), использование настроек с полем "variable"
+может существенно увеличить скорость отображения шаблона. 
+
 ## Rendering A Collection In An ItemView
+
+## Отображение коллекции в ItemView
 
 While the most common way to render a Backbone.Collection is to use
 a `CollectionView` or `CompositeView`, if you just need to render a 
