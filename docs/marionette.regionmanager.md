@@ -331,7 +331,7 @@ RegionManager наследует от underscore.js ряд методов для
 var rm = new Marionette.RegionManager();
 
 rm.each(function(region){
-  // do stuff w/ the region instance here
+  //тут что-то делаем с регионами
 });
 ```
 
