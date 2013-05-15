@@ -225,7 +225,7 @@ You can implement this in your view to provide custom code for dealing
 with the view's `el` after it has been rendered:
 
 Сразу после того, как представление отреднерено, будет вызван метод `onRender`.
-Вы можете реализовать его в представлении, например, чтобы взаимодействовать c элементом представления `el`, который также уже будет отреднерен. 
+Вы можете реализовать его в представлении, например, чтобы взаимодействовать c объектом представления `el`, который также уже будет отреднерен. 
 
 ```js
 Backbone.Marionette.CollectionView.extend({
@@ -460,7 +460,7 @@ event, that event will bubble up through the parent
 collection view with "itemview:" prepended to the event
 name. 
 
-Когда item view внутри collection view [порождает какое-то событие](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L145), оно всплывает сквозь родительский collection view, и название события [предваряется конструкцией "itemview:"](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L172-L177) заданной [по умолчанию](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L9).
+Когда item view внутри collection view [порождает какое-либо событие](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L145), оно всплывает сквозь родительский collection view, и название события [предваряется конструкцией "itemview:"](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L172-L177) заданной [по умолчанию](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L9).
 
 That is, if a child view triggers "do:something", the 
 parent collection view will then trigger "itemview:do:something".
@@ -498,7 +498,7 @@ Normally, you would have your item view listening to DOM
 events or model change events, and then triggering an event
 of it's own based on that.
 
-Добавим, что мы использовали хак с получением прямой ссылки на встроенное представление просто для генерации события, обычно все обстоит иначе - генерация событий в item view обусловлена его подпиской на прослушивание DOM-событий или событий, связанных с изменением модели.
+Еще раз повторим, что в данном примере мы использовали хак с получением прямой ссылки на встроенное представление просто для генерации события, обычно все обстоит иначе - генерация событий в item view обусловлена его подпиской на прослушивание DOM-событий или событий, связанных с изменением модели.
 
 ## CollectionView's `itemViewEventPrefix`
 
@@ -558,7 +558,7 @@ new MyCollectionView().render().done(function(){
 The collection view binds to the "add", "remove" and "reset" events of the
 collection that is specified. 
 
-Сollection view привязывается к событиям "add", "remove" и "reset" коллекции.
+Сollection view прослушивает события "add", "remove" и "reset" коллекции.
 
 When the collection for the view is "reset", the view will call `render` on
 itself and re-render the entire collection.
@@ -595,7 +595,7 @@ By default the collection view will call jQuery's `.append` to
 move the HTML contents from the item view instance in to the collection
 view's `el`.
 
-По умолчанию collection view [вызывает метод jQuery `.append`](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L233), чтобы добавить HTML-содержимое экземпляра item view к `el` коллекции.
+По умолчанию collection view [вызывает метод jQuery `.append`](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.collectionview.js#L233), чтобы добавить HTML-содержимое экземпляра item view к объекту `el` collection view.
 
 You can override this by specifying an `appendHtml` method in your 
 view definition. This method takes three parameters and has no return
@@ -639,7 +639,7 @@ the views within the collection view, iterate them, find them by
 a given indexer such as the view's model or collection, and more.
 
 CollectionView использует [Backbone.BabySitter](https://github.com/marionettejs/backbone.babysitter) для хранения и организации встроенных представлений,
-что предполагает легкий доступ к представлениям внутри базового представления, перебор их и нахождение по данному индексу точно так же, как если бы мы работали с моделями внутри коллекции, и ряд других действий.
+что предполагает легкий доступ к представлениям внутри базового представления, перебор и нахождение их по данному индексу точно так же, как если бы мы работали с моделями внутри коллекции, и ряд других действий.
 
 ```js
 var cv = new Marionette.CollectionView({
