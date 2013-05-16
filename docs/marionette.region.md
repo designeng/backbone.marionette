@@ -5,6 +5,8 @@ show / close them in your application. They use a jQuery selector
 to show your views in the correct place. They also call extra
 methods on your views to facilitate additional functionality.
 
+Регионы обеспечивают последовательное управление представлениями в приложении и предоставляют для этого специальные методы "show" и "close".
+
 ## Documentation Index
 
 * [Defining An Application Region](#defining-an-application-region)
@@ -23,11 +25,17 @@ methods on your views to facilitate additional functionality.
 
 ## Defining An Application Region
 
+## Задание региона в приложении
+
 Regions can be added to the application by calling the `addRegions` method on
 your application instance. This method expects a single hash parameter, with
 named regions and either jQuery selectors or `Region` objects. You may
 call this method as many times as you like, and it will continue adding regions
 to the app. 
+
+Регионы могут быть добавлены в приложение с помощью метода `addRegions`, вызванном на экземпляре приложения.
+Данный метод принимает единственныйц параметр - хеш соответствий: именам регионов в нем соответствуют jQuery-селекторы.
+Можно вызывать этот метод столько раз, сколько потребуется, в любой момент работы приложения.
 
 ```js
 MyApp.addRegions({
@@ -40,12 +48,21 @@ As soon as you call `addRegions`, your regions are available on your
 app object. In the above, example `MyApp.mainRegion` and `MyApp.navigationRegion`
 would be available for use immediately.
 
+Как только мы вызовем `addRegions`, регионы станут доступны в объекте приложения для дальнейшей работы.
+В примере выше определены два региона: `MyApp.mainRegion` и `MyApp.navigationRegion`.
+
 If you specify the same region name twice, the last one in wins.
+
+Для одного и того же региона, определенного дважды, будет справедливо последнее определение.
 
 ## Initialize A Region With An `el`
 
+## Инициализация региона с помощью `el`
+
 You can specify an `el` for the region to manage at the time
 that the region is instantiated:
+
+Вы можете задать в объекте, переданном в качестве параметра в конструктор региона, атрибут `el`:
 
 ```js
 var mgr = new Backbone.Marionette.Region({
@@ -55,40 +72,51 @@ var mgr = new Backbone.Marionette.Region({
 
 ## Basic Use
 
+## Базовое использование
+
 Once a region has been defined, you can call the `show`
 and `close` methods on it to render and display a view, and then
 to close that view:
 
+Как только регион был определен, можно вызывать его методы `show` и `close` для отображения в регионе представления:
+
 ```js
 var myView = new MyView();
 
-// render and display the view
+// внедряем и показываем представление
 MyApp.mainRegion.show(myView);
 
-// closes the current view
+// текущее представление для данного региона будет закрыто
 MyApp.mainRegion.close();
 ```
 
 If you replace the current view with a new view by calling `show`,
 it will automatically close the previous view.
 
+Предыдущее представление, определенное в регионе, будет автоматически закрыто с показом нового представления посредством вызова метода `show`:
+
 ```js
-// Show the first view.
+// показываем первое представление
 var myView = new MyView();
 MyApp.mainRegion.show(myView);
 
-// Replace the view with another. The
-// `close` method is called for you
+// заменяем его на другое - метод `close` выполнится автоматически
 var anotherView = new AnotherView();
 MyApp.mainRegion.show(anotherView);
 ```
 
 ## `reset` A Region
 
+## Сброс региона (метод [`reset`](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.region.js#L176-L184))
+
 A region can be `reset` at any time. This will close any existing view
 that is being displayed, and delete the cached `el`. The next time the
 region is used to show a view, the region's `el` will be queried from
 the DOM.
+
+Регион может быть деинсталлирован в любой момент. Эта операция закроет всякое прежде отображенное в нем представление, и удалит закешированный `el`.
+В следующий раз, когда регион будет использован для показа представления, `el` будет запрошен из DOM.
+
 
 ```js
 myRegion.reset();
@@ -97,13 +125,22 @@ myRegion.reset();
 This is useful for scenarios where a region is re-used across view
 instances, or in unit testing.
 
+Это может оказаться полезным в сценариях с повторным использованием региона различными экземплярами приложения, или при юнит-тестировании.
+
 ## Set How View's `el` Is Attached
+
+## Установка способа прикрепления `el` к DOM
 
 If you need to change how the view is attached to the DOM when
 showing a view via a region, override the `open` method of the
 region. This method receives one parameter - the view to show.
 
+Если необходимо изменить способ, которым представление встраивается в DOM при показе его в регионе, нужно переопределить метод `open` региона.
+Метод принимает единственный переметр - экземпляр представления, который должен быть показан.
+
 The default implementation of `open` is:
+
+По умолчанию, реализация метода [`open`](https://github.com/marionettejs/backbone.marionette/blob/master/src/marionette.region.js#L147-L151) следующая:
 
 ```js
 Marionette.Region.prototype.open = function(view){
